@@ -109,4 +109,5 @@ plot(time,r2_v_r2_h(6,2:end),'r');
 title('Plot velocity')
 xlabel('time (s)')
 ylabel('velocity (m/s) or (rad/s)')
-l=legend('vx','vy','vz','wx','wy','wz');l.Location='best';
+l=legend('vx','vy','vz','wx','wy','wz');
+l.Location='best';
