@@ -6,6 +6,9 @@
 close all;
 clear all;
 clc;
+addpath /home/matheus/Documents/MATLAB/turtle_simu/src/*
+
+
 
 % Rope parameters
 rlen = 0.75; % rope half-length in meters
@@ -50,10 +53,10 @@ for t = 0:dt:t_end
     clf(fig);
 
     % Motion equation for robot r1
-    r1_R_w = angles2rotMtx(w_p_r1(4:6)); % rotation matrix World-to-robot
+    r1_R_w = angles2rotationMatrix(w_p_r1(4:6)); % rotation matrix World-to-robot
     r1_J_w = angularRateMtx(w_p_r1(4:6)); % World-to-robot
     w_T_r1 = transf_W2R(r1_R_w',inv(r1_J_w)); % Inverse transformation: R2W
-    w_p_ropeA = w_p_r1 + r1_p_ropeA; % position of pA in World-frame
+    w_p_ropeA = w_p_ropeA + w_T_r1*r1_p_ropeA; % position of pA in World-frame
     
     % Motion equation for robot r2
     r2_R_w = angles2rotMtx(w_p_r2(4:6)); % rotation matrix World-to-robot

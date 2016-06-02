@@ -1,4 +1,4 @@
-function [ angles ] = rotMtx2angles( Rot )
+function [ angles ] = rotationMatrix2angles( Rot )
 % rotMtx2angles retieves the Cardan angles from a given rotation matrix
 % Reference: J Diebel, Stanford 2006
 

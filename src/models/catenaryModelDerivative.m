@@ -1,6 +1,6 @@
-function value = derivative_dydp(xk,R,Hmax,p,index)
-% This function calculates the model partials derivatives (dy/da and
-% dr/db);
+function value = catenaryModelDerivative(xk,R,Hmax,p,index)
+% This function calculates the catenary model partials derivatives (dy/da and
+% dy/db);
 % Remember: the residual is defined as rk = yk - y(xk,p), where p is the
 % vector of parameters p = [a b]. If you wish the residuals
 % partial derivatives, please do: drk/dp = -dy(xk,p)/dp;
