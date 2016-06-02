@@ -12,7 +12,7 @@ addpath /home/matheus/Documents/MATLAB/turtle_simu/src/estimation
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/models
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/optimization
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/sampling
-addpath /home/matheus/Documents/MATLAB/turtle_simu/src/transformations
+addpath /home/matheus/Documents/MATLAB/turtle_simu/src/transformations/codeClaire
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/visualSeroing
 
 % Rope parameters
@@ -37,11 +37,14 @@ s_d = [a_d; b_d];
 sigma_W = [0; 0; 0; 0; 0; 0]; 
 % Robots-frames poses wrt World
 w_pose_r1 = [2.5; 2; 0; 0; 0; 0];               % turtle r1 initial pose
+r1_M_w = homogeneousMatrix(w_pose_r1);          % r1 corresp. homog. matrix
 w_pose_r2 = [1.5; 1; 0; 0; 0; deg2rad(-15)];	% turtle r2 initial pose
+r2_M_w = homogeneousMatrix(w_pose_r2);          % r2 corresp. homog. matrix
 turtle_radius = 0.2;                            % turtle radius
 
 % Pose of rope attachment points in robot-frame : pA on r1 and pC on r2
 r1_pose_pA = [-turtle_radius; 0; 0; 0; 0; 0];   % pA expressed in r1-frame
+pA_M_r1 = homogeneousMatrix(r1_pose_pA);         % r1 corresp. homog. matrix
 r2_pose_pC = [turtle_radius; 0; 0; 0; 0; 0];    % pC expressed in r2-frame
 % Camera pose in r2-frame
 r2_pose_cam = [-turtle_radius; 0; 0; 0; 0; 0];
@@ -62,9 +65,7 @@ for t = 0:dt:t_end
     clf(fig);
 
     % Motion equation for robot r1
-    r1_R_w = angles2rotationMatrix(w_pose_r1(4:6)); % rotation matrix World-to-robot
-    r1_J_w = angularRateMtx(w_pose_r1(4:6)); % World-to-robot
-    w_T_r1 = transf_W2R(r1_R_w',inv(r1_J_w)); % Inverse transformation: R2W
+
     w_p_ropeA = w_p_ropeA + w_T_r1*r1_pose_pA; % position of pA in World-frame
     
     % Motion equation for robot r2

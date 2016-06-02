@@ -1,7 +1,14 @@
-function M = homogeneousMatrix(x,y,z,rx,ry,rz)
+function M = homogeneousMatrix(pose)
 % fonction scilab pour construire une matrice homogene en partant d'un
 % vecteur x,y,z,rx,ry,rz les angles sont donnes en radians
-  
+
+x   = pose(1);
+y   = pose(2);
+z   = pose(3);
+rx  = pose(4);
+ry  = pose(5);
+rz  = pose(6);
+
 Tr = [x;y;z];
 
 % Mouvement de rotation
