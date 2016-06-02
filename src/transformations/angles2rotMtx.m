@@ -1,4 +1,4 @@
-function [ Rot ] = angles2rotationMatrix( angles )
+function [ Rot ] = angles2rotMtx( angles )
 % rotMtx Generates a rotation matrix from three Cardan angles phi, theta and
 % psi in radians
 %   phi     :   rotation around X-axis (roll)

@@ -6,14 +6,7 @@
 close all;
 clear all;
 clc;
-addpath ('src/transformations', ...
-         'src/estimation',...
-         'src/drawing',...
-         'src/models',...
-         'src/sampling',...
-         'src/visualServoing',...
-         'src/optimization');
-
+addpath /home/matheus/Documents/MATLAB/turtle_simu/src/drawing
 
 
 
@@ -44,8 +37,6 @@ w_p_r2 = [1.5; 1; 0; 0; 0; deg2rad(-15)]; % initial position of turtle r2 in Wor
 % Rope
 r1_p_ropeA = [-turtle_radius; 0; 0; 0; 0; 0]; % rope attachment point (pA) on robot r1 in r1-frame
 r2_p_ropeC = [turtle_radius; 0; 0; 0; 0; 0]; % rope attachment point (pC) on robot r2 in r2-frame
-w_p_ropeA  = zeros(6,1); % Init the rope pose
-
 % Camera
 r2_p_cam = [-turtle_radius; 0; 0; 0; 0; 0]; % position of camera embeeded on turtle r2 oin r2-frame
 
@@ -62,7 +53,7 @@ for t = 0:dt:t_end
     clf(fig);
 
     % Motion equation for robot r1
-    r1_R_w = angles2rotMtx(w_p_r1(4:6)); % rotation matrix World-to-robot
+    r1_R_w = angles2rotationMatrix(w_p_r1(4:6)); % rotation matrix World-to-robot
     r1_J_w = angularRateMtx(w_p_r1(4:6)); % World-to-robot
     w_T_r1 = transf_W2R(r1_R_w',inv(r1_J_w)); % Inverse transformation: R2W
     w_p_ropeA = w_p_ropeA + w_T_r1*r1_p_ropeA; % position of pA in World-frame
