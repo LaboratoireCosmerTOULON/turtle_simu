@@ -41,7 +41,7 @@ for k = 1:maxstep % iterate through process
        
         % Calculation of the Jacobian (dr/dp)
         for j=1:n % for all parameters
-            J(i,j) = -derivative_dydp(xi(i),rlen,hmax,P,j); % drdp = -dydp
+            J(i,j) = -catenary_dydp(xi(i),rlen,hmax,P,j); % drdp = -dydp
         end
     end
     

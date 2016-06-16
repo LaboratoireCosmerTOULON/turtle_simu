@@ -8,8 +8,8 @@ x_noi = awgn(Pcat2d(2,:), snr);
 y_noi = awgn(Pcat2d(3,:), snr);
 % Observation
 nob = 100; % number of samples
-x_ob = x_noi(1:pob*length(x_noi)/nob:pob*length(x_noi));
-y_ob = y_noi(1:pob*length(y_noi)/nob:pob*length(y_noi));
+x_ob = x_noi(1:floor(pob*length(x_noi)/nob):floor(pob*length(x_noi)));
+y_ob = y_noi(1:floor(pob*length(y_noi)/nob):floor(pob*length(y_noi)));
 
 Pcat_samp = [x_ob; y_ob];
 
