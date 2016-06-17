@@ -4,8 +4,8 @@ function [ Pcat_samp ] = catenarySampling( Pcat2d, pob, snr )
 % some noise is added to the observation (snr = signal noise ratio)
 
 % Simulate a noisy observation
-x_noi = awgn(Pcat2d(2,:), snr);
-y_noi = awgn(Pcat2d(3,:), snr);
+x_noi = awgn(Pcat2d(1,:), snr);
+y_noi = awgn(Pcat2d(2,:), snr);
 % Observation
 nob = 100; % number of samples
 x_ob = x_noi(1:floor(pob*length(x_noi)/nob):floor(pob*length(x_noi)));
