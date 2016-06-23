@@ -1,4 +1,4 @@
-function [Pmin,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,pinit,lb,ub)
+function [Pmin,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,pinit,lb,ub,pc)
 %
 % GaussNewton_v2 (dampled and bounded version)
 %
@@ -33,8 +33,8 @@ for k = 1:maxstep % iterate through process
     %        Calculation of residuals and function Jacobian       %
     % ----------------------------------------------------------- %
        
-    Pcat2d = catenary2D(rlen,hmax,P,xi); % calculate the model y = f(xi,p)
-    y = Pcat2d(3,:);
+    Pcat2d = catenaryProjection(rlen,hmax,P,xi,pc); % calculate the model y = f(xi,p)
+    y = Pcat2d(2,:);
     for i = 1:m % for all measurements
         R(i,1) = yi(i) - y(i);
         chisq = chisq + R(i,1)^2; % calculate the sum of squares of residuals

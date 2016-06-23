@@ -41,7 +41,7 @@ elseif(nargin == 5)
     pc_y = pc(2);
     pc_z = pc(3);
     z = pc_z./(1 + x_img*(sqrt(1-b^2)/b));
-    t = -(pc_z*x_img)./(1 + x_img*(sqrt(1-b^2)/b));
+    t = -(pc_z*x_img)./(b + x_img*sqrt(1-b^2));
     y_img = (1./z).*(-(1/C)*(cosh(C*(t-D))-1) + h + pc_y);
 else 
     disp('Error: worng number or arguments in function catenaryProjection');
