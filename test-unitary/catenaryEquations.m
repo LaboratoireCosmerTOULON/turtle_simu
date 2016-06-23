@@ -21,7 +21,7 @@ hmax    = 0.9*rlen;         % cable maximum sag
 cam_pc = [0 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
 % Catenary parameters : vector p=(h/hmax,sin(theta))
 s(1) = 0.8; % h = p(1)*hmax; cable sag
-s(2) = 0.6;
+s(2) = 0.9;
 
 % Draw 3D curve
 Pcat3d = catenary3D(rlen,hmax,s,cam_pc);
