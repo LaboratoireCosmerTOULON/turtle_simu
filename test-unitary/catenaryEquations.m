@@ -20,7 +20,7 @@ rlen    = 0.75;             % cable half-length in meters
 hmax    = 0.9*rlen;         % cable maximum sag
 cam_pc = [0 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
 % Catenary parameters : vector p=(h/hmax,sin(theta))
-s(1) = 0.45; % h = p(1)*hmax; cable sag
+s(1) = 0.8; % h = p(1)*hmax; cable sag
 s(2) = 0.45;
 
 % Draw 3D curve
@@ -67,7 +67,7 @@ Pcat3d_gna_plt = Pcat3d_gna;
 for i=1:length(Pcat3d_plt)
     Pcat3d_gna_plt(:,i) = rotm*Pcat3d_gna(:,i);
 end
-%Pcat3d_gna  = rotm*Pcat3d_gna;
+Pcat3d_gna  = rotm*Pcat3d_gna;
 % Plot
 figure();
 plot3(Pcat3d_plt(1,:),Pcat3d_plt(2,:),Pcat3d_plt(3,:)) % original
@@ -80,7 +80,7 @@ title('3D Catenary');
 xlabel('x');
 ylabel('y');
 zlabel('z');
-% axis([-1.50 1.50 -1.50 1.50 -hmax 0.5])
+axis([-1.50 1.50 -1.50 1.50 -hmax 0.5])
 
 % Plot estimated 2d curves
 Pcat2d_fmc = catenaryProjection(rlen,hmax,s_fmc, Pcat3d_fmc(1,:), Pcat3d_fmc(2,:), Pcat3d_fmc(3,:),cam_pc); % estimation from fmincon

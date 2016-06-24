@@ -18,42 +18,48 @@ a       = 0.6;
 h       = a*hmax;       % calbe current sag
 theta   = deg2rad(30);  % cable angle in radians
 b       = sin(theta);
+s = [a; b];
 
 % Constants for the catenary equation
 C = 2*h/(rlen^2 - h^2);
 D = (1/C)*acosh(C*h + 1);
 
 % Turtlebot features (measurements in SigmaC)
-Tx  = 0.0;   % distance in x-axis between camera and rope attachment on robot
-Ty  = -0.11; % distance in y-axis between camera and rope attachment on robot
-Tz  = 0.28;  % distance in z-axis between camera and rope attachment on robot
+Tx      = 0.4;   % distance in x-axis between camera and rope attachment on robot
+Ty      = -0.11; % distance in y-axis between camera and rope attachment on robot
+Tz      = 0.28;  % distance in z-axis between camera and rope attachment on robot
+Tcam    = [Tx Ty Tz];
 f   = 1;      % focal length
 
 % Rope 3D equation in Camera frame (SigmaC)
-t           = linspace(-D,D,1000);
-sigmaC_X    = -b.*(t + D) + Tx;
-sigmaC_Y    = -1/C.*(cosh(C*t) - 1) + h + Ty;
-sigmaC_Z    = sqrt(1-b^2)*(t + D) + Tz;
+Pcat3d = catenary3D(rlen,hmax,s,Tcam);
 
 % Standard projection
-x_proj = sigmaC_X./sigmaC_Z;
-y_proj = sigmaC_Y./sigmaC_Z;
+Pcat_proj   = catenaryProjection(rlen,hmax,s,Pcat3d(1,:),Pcat3d(2,:),Pcat3d(3,:),Tcam);
+x_proj      = Pcat_proj(1,:); 
+y_proj      = Pcat_proj(2,:); 
+
+% Sampling projection and add some noise
+pob = 1.0; % percentage of observed curve
+snr = 10000; % signal noise ratio
+Pcat_proj_samp = catenarySampling(Pcat_proj, pob, snr);
+x_proj_samp = Pcat_proj_samp(1,:);
 
 % Rope projection on image plan (equation de Vincent)
-xi = x_proj;
-qx  = (f*(Tx - D*b) - xi*(Tz + D*sqrt(1-b^2)))./(xi*sqrt(1-b^2) + f*b);
-yi   = f*(-1/C*(cosh(C*qx) - 1) + h + Ty)./(sqrt(1-b^2)*qx + D*sqrt(1-b^2) + Tz);
+Pcat_proj_v = catenaryProjection_vincent(f,rlen,hmax,s,x_proj_samp,Tcam);
+x_proj_v    = Pcat_proj_v(1,:);
+y_proj_v    = Pcat_proj_v(2,:);
 
 % Rope projection on image plan (equation de Matheus)
-z = Tz./(1 + xi*(sqrt(1-b^2)/b));
-t = -(Tz*xi)./(b + xi*sqrt(1-b^2));
-yi2 = (1./z).*(-(1/C)*(cosh(C*(t-D))-1) + h + Ty);
+Pcat_proj_m = catenaryProjection_matheus(rlen,hmax,s,x_proj_samp,Tcam);
+x_proj_m    = Pcat_proj_m(1,:);
+y_proj_m    = Pcat_proj_m(2,:);
 
 figure();
 plot(x_proj,y_proj) % projection classique
 hold on
-plot(xi,yi,'r') % projection Vicnent
-plot(xi,yi2,'g') % projection Matheus
+plot(x_proj_v,y_proj_v,'r') % projection Vicnent
+% plot(x_proj_m,y_proj_m,'g') % projection Matheus
 l=legend('Projection p = f*P/Z','Projection Vincent)','Projection Matheus)');l.Location='best'; %'Gauss-Newton','Validation'
 title('Catenary projection')
 xlabel('x_{img} (m)')

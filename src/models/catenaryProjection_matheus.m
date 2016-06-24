@@ -1,4 +1,4 @@
-function P = catenaryProjection(varargin)
+function P = catenaryProjection_matheus(varargin)
 % catenary2D calculates the 2D catenary equation in frame pC, the rope
 % attachment point on robot r2
 % Inputs
@@ -44,7 +44,6 @@ elseif(nargin == 5)
     z = (Tx*sqrt(1-b^2) + Tz*b)./(b + x_img*(sqrt(1-b^2)));
     t = (Tx - Tz*x_img)./(b + x_img*sqrt(1-b^2));
     y_img = (1./z).*(-(1/C)*(cosh(C*(t-D))-1) + h + Ty);
-    
 else 
     disp('Error: worng number or arguments in function catenaryProjection');
 end

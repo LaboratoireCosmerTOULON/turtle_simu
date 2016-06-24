@@ -43,6 +43,7 @@ b = [];
 Aeq = [];
 beq = [];
 s_fmc = fmincon(@(s_hat)fcout1(xi,yi,rlen,hmax,s_hat,Tcam),s_init,A,b,Aeq,beq,lb,ub); % minimize error on Y axis
+drawObjectiveFunction(xi,yi,rlen,hmax,Tcam,1)
 
 % Plot estimated 2d curves
 Pcat3d_fmc  = catenary3D(rlen,hmax,s_fmc,Tcam); % estimation from fmincon

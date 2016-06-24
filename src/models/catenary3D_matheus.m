@@ -1,4 +1,4 @@
-function P = catenary3D(rlen,hmax,s, Tc)
+function P = catenary3D_matheus(rlen,hmax,s, pc)
 % function for calculation of a 3D catenary equation in the camera
 % frame
 % INPUTS :
@@ -11,18 +11,21 @@ function P = catenary3D(rlen,hmax,s, Tc)
 % OUTPUTS :
 %   P = [x;y;z] = output matrix with catenary coordinates
 
+% ************ ATTENTION **************** %
+% THIS EQUATION IS NOT VALID. THIS IS AN OLD VERSION OF THE FUNCTION
+
 a = s(1); % h/hmax
 b = s(2); % sin(psi)
 h = a*hmax;
-Tc_x = Tc(1);
-Tc_y = Tc(2);
-Tc_z = Tc(3);
+pc_x = pc(1);
+pc_y = pc(2);
+pc_z = pc(3);
 
 C = 2*h/(rlen^2 - h^2);
 D = (1/C)*acosh(C*h + 1);
 t = linspace(-D,D,1001);
-xc = -b*(t+D) + Tc_x;
-yc = -(1/C)*(cosh(C*t)-1) + h + Tc_y;
-zc = sqrt(1-b^2)*(t+D) + Tc_z;
-P = [xc; yc; zc];
+x = -b*(t+D) + pc_x;
+z = sqrt(1-b^2)*(t+D) + pc_z;
+y = -(1/C)*(cosh(C*(-x./b-D))-1) + h + pc_y; % catenary
+P = [x;y;z];
 end

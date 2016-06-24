@@ -1,4 +1,4 @@
-function P = catenary3D(rlen,hmax,s, Tc)
+function P = catenary3D_Hugel(rlen,hmax,s, Tc)
 % function for calculation of a 3D catenary equation in the camera
 % frame
 % INPUTS :
