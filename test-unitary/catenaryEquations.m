@@ -20,8 +20,8 @@ rlen    = 0.75;             % cable half-length in meters
 hmax    = 0.9*rlen;         % cable maximum sag
 cam_pc = [0 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
 % Catenary parameters : vector p=(h/hmax,sin(theta))
-s(1) = 0.8; % h = p(1)*hmax; cable sag
-s(2) = 0.9;
+s(1) = 0.45; % h = p(1)*hmax; cable sag
+s(2) = 0.45;
 
 % Draw 3D curve
 Pcat3d = catenary3D(rlen,hmax,s,cam_pc);
@@ -31,8 +31,8 @@ z = Pcat3d(3,:);
 % Calculate the projection
 Pcat2d = catenaryProjection(rlen,hmax,s,x,y,z,cam_pc);
 % Simulate a noisy observation
-pob = 0.2; % percentage of observed curve
-snr = 50; % signal noise ratio
+pob = 0.5; % percentage of observed curve
+snr = 40; % signal noise ratio
 Pcat2d_samp = catenarySampling(Pcat2d, pob, snr);
 drawObjectiveFunction(Pcat2d_samp(1,:),Pcat2d_samp(2,:),rlen,hmax,cam_pc,1);
 
@@ -46,8 +46,10 @@ A = []; % -1 0; 1 0; 0 -1; 0 1
 b = []; % 0; 50; 0; 1
 Aeq = [];
 beq = [];
-s_fmc = fmincon(@(s_hat)fcout1(Pcat2d_samp(1,:),Pcat2d_samp(2,:),rlen,hmax,s_hat,cam_pc),s_init,A,b,Aeq,beq,lb,ub); % minimize error on Y axis
-    
+P = catenaryProjection(rlen,hmax,s_init,Pcat2d_samp(1,:),cam_pc);
+
+s_fmc = fmincon(@(s_hat)fcout1(Pcat2d_samp(1,:),Pcat2d_samp(2,:),rlen,hmax,s_hat,cam_pc),s_init,A,b,Aeq,beq,lb,ub); % minimize error on Y axis    
+
 % Plot estimated 3d curve
 % Rotate axis for better visualization in plot
 rotm = eul2rotm([0 0 -pi/2]);

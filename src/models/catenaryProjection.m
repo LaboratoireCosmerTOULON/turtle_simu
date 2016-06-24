@@ -47,7 +47,5 @@ else
     disp('Error: worng number or arguments in function catenaryProjection');
 end
 % Calculate the catenary projection in the image plane considering f=1m
-disp('length Ximg');
-disp(length(x_img));
 P = [x_img; y_img; ones(1,length(x_img))];
 end
