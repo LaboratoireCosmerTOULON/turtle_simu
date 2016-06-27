@@ -20,14 +20,14 @@ filenameformat = '/Figures/160623_fcost_analysis/eparam_fmincon_%d.fig';
 % Observation parameters
 snr = 100; % signal noise ratio
 nob = 100; % number of samples
-pob_c = 0.1:0.05:0.2; % percentage of observed catenary
+pob_c = 0.1:0.05:1.0; % percentage of observed catenary
 % optimization options
 options = optimoptions('fmincon','Display','off');
 
 % Rope parameter
 rlen    = 0.75;             % cable half-length in meters
 hmax    = 0.9*rlen;         % cable maximum sag
-Tcam = [0 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
+Tcam = [0.10 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
 
 k = 1; % counter
 [X,Y] = meshgrid(0.05:0.05:1, 0.05:0.05:1);
