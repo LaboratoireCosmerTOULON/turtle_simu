@@ -1,4 +1,4 @@
-function drawObjectiveFunction(xi,yi,R,Hmax,pc,index)
+function drawObjectiveFunction(xi,yi,R,Hmax,pc,axismax,index)
 switch index
     case 1
         [X,Y] = meshgrid(0:0.01:1,0:0.01:1);
@@ -15,13 +15,13 @@ switch index
         figure();
         plt = surf(X,Y,Z);
         l=legend('Fitting square error');l.Location='best';
-        title('Classic cost function');
+        title('Objective function');
         xlabel('X = (h/hmax)')
         ylabel('Y = sin(theta)')
-        zlabel('Z = cost');
+        zlabel('Z = Cost');
         colorbar;
-        caxis([0,100000])
-        axis([0 1 0 1 0 100000]);
+        caxis([0,axismax])
+        axis([0 1 0 1 0 axismax]);
         set(plt, 'edgecolor','none');
 
     case 2

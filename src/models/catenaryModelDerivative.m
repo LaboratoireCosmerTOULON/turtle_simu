@@ -30,7 +30,7 @@ switch index    % dy/da or dy/db
         value   = (AI + AII);
     case 2      % dy/b, partial with respect to b = sin(theta)
         dq1db   =  ((b^2 + sqrt(1-b^2))*Tx + (b-b*sqrt(1-b^2)-xk)*Tz)./(sqrt(1-b^2)*(sqrt(1-b^2)*Tx+b*Tz)^2);
-        dq2db   =  -(sqrt(1-b^2) - b*xk)./(sqrt(1-b^2)*(b+sqrt(1-b^2)*xk)^2);
+        dq2db   = -(sqrt(1-b^2) - b*xk)./(sqrt(1-b^2)*(b+sqrt(1-b^2)*xk)^2);
         BIa     = -(1/C)*dq1db*(cosh(C*q2 - C*D)-1);
         BIb     = -q1*sinh(C*q2 -C*D)*dq2db;
         BI      =  BIa + BIb;

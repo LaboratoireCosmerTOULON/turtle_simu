@@ -36,14 +36,24 @@ for k = 1:maxstep % iterate through process
     Pcat2d = catenaryProjection(rlen,hmax,P,xi,pc); % calculate the model y = f(xi,p)
     y = Pcat2d(2,:);
     for i = 1:m % for all measurements
+%         fprintf('i: %d size(J): %d %d \n',i,size(J));
         R(i,1) = yi(i) - y(i);
         chisq = chisq + R(i,1)^2; % calculate the sum of squares of residuals
        
         % Calculation of the Jacobian (dr/dp)
         for j=1:n % for all parameters
-            J(i,j) = -catenary_dydp(xi(i),rlen,hmax,P,j); % drdp = -dydp
+            J(i,j) = -catenaryModelDerivative(xi(i),rlen,hmax,pc,P,j); % drdp = -dydp
         end
+        if(J(i,1) < -100.0 || J(i,2) < -100.0 || J(i,1) > 100.0 || J(i,2) > 100.0 || isnan(J(i,1)) || isnan(J(i,2)))
+            J(i,:) = 0;
+%             R(i,:) = [];  
+        end
+%         fprintf('J(%d,:)= %.6f %.6f \n',i,J(i,:));
     end
+%     fprintf('mean(J): %.6f, %.6f \n',mean(J));
+%     fprintf('max(J): %.6f, %.6f \n',max(J));
+%     fprintf('max(J): %.6f, %.6f \n',min(J));
+    
     
     % ----------------------------------------------------------- %
     %            Calculate new approximation
@@ -62,7 +72,7 @@ for k = 1:maxstep % iterate through process
         Lambda = diag(Lbda);
         P = Pold - Lambda*pinv(J)*R; 
     end
-%     disp(fprintf('%d: p_old = [%.4f %.4f], deltap = %.4f*[%.4f %.4f]',k,p_old,lambda,((JT*J)\JT)*r));
+%     fprintf('%d: p_old = [%.4f %.4f], Lbda = (%.4f %.4f), deltap = [%.4f %.4f]\n',k,Pold,Lbda,pinv(J)*R);
     Pmin = P;
     
     
