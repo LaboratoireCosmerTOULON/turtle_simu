@@ -12,10 +12,10 @@ function P = catenaryProjection_vincent(varargin)
 %   [ x; y ]: matrix with catenary coordinates
 
 % Extract fucntion arguments
-f       = varargin{1};
-rlen    = varargin{2};
-hmax    = varargin{3};
-s       = varargin{4};
+f       = 1; %varargin{1};
+rlen    = varargin{1};
+hmax    = varargin{2};
+s       = varargin{3};
 a       = s(1);
 b       = s(2);
 % Some constantes for catenary equation
@@ -29,16 +29,16 @@ D = (1/C)*acosh(C*h + 1);
 % y_img
 x_img = zeros(1,1);
 y_img = zeros(1,1);
-if(nargin == 8)
-    x = varargin{5}; % x-coordinate of catenary in camera frame
-    y = varargin{6}; % y-coordinate of catenary in camera frame
-    z = varargin{7}; % z-coordinate of catenary in camera frame
+if(nargin == 7)
+    x = varargin{4}; % x-coordinate of catenary in camera frame
+    y = varargin{5}; % y-coordinate of catenary in camera frame
+    z = varargin{6}; % z-coordinate of catenary in camera frame
     % pc = varargin{7};% not used
     x_img = x./z;
     y_img = y./z;
-elseif(nargin == 6)
-    x_img = varargin{5}; % x-coordinate of catenary in image plane
-    Tc = varargin{6};    % rope attachment point 
+elseif(nargin == 5)
+    x_img = varargin{4}; % x-coordinate of catenary in image plane
+    Tc = varargin{5};    % rope attachment point 
     Tc_x = Tc(1);
     Tc_y = Tc(2);
     Tc_z = Tc(3);
