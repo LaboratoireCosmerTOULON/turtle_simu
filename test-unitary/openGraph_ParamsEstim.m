@@ -3,7 +3,7 @@ close all;
 clear all;
 clc;
 
-filenameformat = '/Figures/160623_fcost_analysis/eparam_fmincon_%d.fig'; % file name formate to same graphs of parameters estimation erros using the cost function fcost1
+filenameformat = '/Figures/160630_fcost_analysis/eparam_gna_%d.fig'; % file name formate to same graphs of parameters estimation erros using the cost function fcost1
 % filenameformat = '/Figures/160509_fcost_analysis/GNA_v2/eparam_fmincon_%d.fig'; % file name formate to same graphs of parameters estimation erros using the cost function fcost1
 
 

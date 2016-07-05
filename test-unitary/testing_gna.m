@@ -21,13 +21,13 @@ rlen    = 0.48;             % cable half-length in meters
 hmax    = 0.40;         % cable maximum sag
 Tcam = [0.01 -0.11 0.28];   % position of rope attachment point (pc) in robot 1 in camera frame 
 % Catenary parameters : vector p=(h/hmax,sin(theta))
-s(1) = 0.8; % h = p(1)*hmax; cable sag
-s(2) = 0.2;
+s(1) = 0.5; % h = p(1)*hmax; cable sag
+s(2) = 0.5;
 % Observation
-pob = 1.0; % percentage of observed curve
+pob = 0.99; % percentage of observed curve
 snr = 50; % signal noise ratio
 % Visualization of objective function
-axisM = 100; % vertical axis maximum value
+axisM = 60; % vertical axis maximum value
 
 % Draw 3D curve
 Pcat3d = catenary3D(rlen,hmax,s,Tcam);
@@ -46,6 +46,10 @@ lb = [0.01; 0.01]; % lower bound
 ub = [1.0; 1.0]; % upper bound
 tic;
 [s_gna,steps,chisq] = GaussNewton_v2(Pcat2d_samp(1,:),Pcat2d_samp(2,:),rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
+if(isnan(s_gna(1)) || isnan(s_gna(2)))
+    s_init = [0.1; 0.9]; % set initial guess
+    [s_gna,steps,chisq] = GaussNewton_v2(Pcat2d_samp(1,:),Pcat2d_samp(2,:),rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
+end
 toc;
 
 % Plot estimated 3d curve
