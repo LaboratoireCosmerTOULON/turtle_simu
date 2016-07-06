@@ -10,6 +10,7 @@ clc;
 options = optimoptions('fmincon','Display','off');
 
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/data
+addpath /home/matheus/Documents/MATLAB/turtle_simu/src/drawing
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/estimation
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/models
 addpath /home/matheus/Documents/MATLAB/turtle_simu/src/optimization
@@ -98,13 +99,13 @@ for k=ko:482;
     hmax = 0.40; % cable maximum sag
     
     % Turtlebot features (measurements in SigmaC)
-    Tx      =  -0.005;          % distance in x-axis between camera and rope attachment on robot
-    Ty      = -0.125;        % distance in y-axis between camera and rope attachment on robot
+    Tx      =  -0.01;          % distance in x-axis between camera and rope attachment on robot
+    Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
     Tz      =  0.27;         % distance in z-axis between camera and rope attachment on robot
     Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     
     % Fitting with Gauss-Newton method
-    s_init = [0.5; 0.6]; % set initial guess
+    s_init = [0.5; 0.5]; % set initial guess
     lb = [0.01; 0.01]; % lower bound
     ub = [1; 1]; % upper bound
     [s_gna,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
@@ -154,13 +155,13 @@ for k=ko:482;
     set(gca,'Ydir','reverse')
     fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\nFMC=(%f,%f)\n \n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi,hmax*s_fmc(1), asin(s_fmc(2))*180/pi);
     
-      % Plot objective fucntion
-%     axismax = 100;
-%     drawObjectiveFunction(xi,yi,rlen,hmax,Tcam,axismax,1);
+    % Plot objective fucntion
+%     axismax = 10000;
+%     drawObjectiveFunction(xi,yi,rlen,hmax,Tcam,axismax,2);
 
     % Wait to continue
     w = waitforbuttonpress;
-    pause(1);
+    pause(0.5);
     
 end
 
