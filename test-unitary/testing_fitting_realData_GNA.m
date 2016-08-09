@@ -33,8 +33,23 @@ prompt = 'What is the number of the first image to be read?';
 ko = input(prompt);
 prompt = 'Display partial results while running? (1/0)';
 dp = input(prompt);
-nImages = 1237;
+nImages = 1217;
 
+% Rope parameter
+rlen = 0.70; % cable half-length in meters
+hmax = 0.40; % cable maximum sag
+% Turtlebot features (measurements in SigmaC)
+Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
+Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
+Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
+Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
+% Camera parameters
+uo = 319.5;
+vo = 239.5;
+px = 525.0;
+py = 525.0;
+
+% Vector with estimated parameters
 Svec_gna = zeros(2,nImages);
 Svec_real = zeros(2,nImages);
 
@@ -73,11 +88,6 @@ for k=ko:nImages;
     [vi,ui] = find(I); % [row,col] = find()
     ui = ui';
     vi = vi';
-    % camera parameters
-    uo = 319.5;
-    vo = 239.5;
-    px = 525.0;
-    py = 525.0;
     % transform from pixels to meters
     xi = (ui-uo)./px;
     yi = (vi-vo)./py;
@@ -91,22 +101,6 @@ for k=ko:nImages;
         xi = -xi;
         inv = true;
     end
-    
-    
-    % print
-    %     for l=1:length(ui)
-    %         fprintf('I_%d : (u=%d v=%d) (x=%f y=%f) \n', k, ui(l), vi(l), xi(l), yi(l));
-    %     end
-    
-    % Rope parameter
-    rlen = 0.70; % cable half-length in meters
-    hmax = 0.40; % cable maximum sag
-    
-    % Turtlebot features (measurements in SigmaC)
-    Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
-    Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
-    Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
-    Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     
     % Fitting with Gauss-Newton method
     s_init = [0.5; 0.5]; % set initial guess
@@ -158,7 +152,7 @@ end
 figure();
 plot(1:nImages,Svec_real(1,:))
 hold on
-plot(1:nImages,Svec_gna(1,:))
+plot(1:nImages,Svec_gna(1,:),'r')
 l=legend('real','GNA');l.Location='best';
 title('Estimating sag from real data')
 xlabel('k')
@@ -168,7 +162,7 @@ ylabel('Rope sag (m)')
 figure();
 plot(1:nImages,Svec_real(2,:))
 hold on
-plot(1:nImages,Svec_gna(2,:))
+plot(1:nImages,Svec_gna(2,:),'r')
 l=legend('real','GNA');l.Location='best';
 title('Estimating angle from real data')
 xlabel('k')
