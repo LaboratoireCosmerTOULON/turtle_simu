@@ -100,12 +100,12 @@ for k=ko:nImages;
     
     % Rope parameter
     rlen = 0.70; % cable half-length in meters
-    hmax = 0.60; % cable maximum sag
+    hmax = 0.40; % cable maximum sag
     
     % Turtlebot features (measurements in SigmaC)
     Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
-    Ty      = -0.10;        % distance in y-axis between camera and rope attachment on robot
-    Tz      =  0.21;         % distance in z-axis between camera and rope attachment on robot
+    Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
+    Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
     Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     
     % Fitting with Gauss-Newton method
@@ -139,7 +139,7 @@ for k=ko:nImages;
         figure(2);
         plot(xp,yp,'.');
         hold on
-        plot(Pcat2d_gna(1,:),Pcat2d_gna(2,:));
+        plot(Pcat2d_gna(1,:),Pcat2d_gna(2,:),'r');
         l=legend('Acquired','GNA');l.Location='best';
         title('Estimating sag from real data')
         xlabel('x_{img}(m)')
@@ -147,16 +147,11 @@ for k=ko:nImages;
         set(gca,'Ydir','reverse')
         axis([-0.64 0.64 -0.48 0.48])
         fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi);
+        
+        % Wait to continue
+        w = waitforbuttonpress;
+        %     pause(0.1);
     end
-    
-    % Plot objective fucntion
-%     axismax = 10000;
-%     drawObjectiveFunction(xi,yi,rlen,hmax,Tcam,axismax,2);
-
-    % Wait to continue
-%     w = waitforbuttonpress;
-    pause(0.1);
-
 end
 
 % Plot estimated angle
