@@ -33,15 +33,15 @@ prompt = 'What is the number of the first image to be read?';
 ko = input(prompt);
 prompt = 'Display partial results while running? (1/0)';
 dp = input(prompt);
-nImages = 1217;
+nImages = 1250;
 
 % Rope parameter
 rlen = 0.70; % cable half-length in meters
 hmax = 0.40; % cable maximum sag
 % Turtlebot features (measurements in SigmaC)
 Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
-Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
-Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
+Ty      = -0.10;        % distance in y-axis between camera and rope attachment on robot
+Tz      =  0.20;         % distance in z-axis between camera and rope attachment on robot
 Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
 % Camera parameters
 uo = 319.5;
@@ -56,31 +56,31 @@ Svec_real = zeros(2,nImages);
 for k=ko:nImages;
     
     angle = 0;
-    if(k < 120)
+    if(k < 144)
         angle = -75;
-    elseif(k >= 120 && k < 207)
+    elseif(k >= 144 && k < 235)
         angle = -60;
-    elseif(k >= 207 && k < 320)
+    elseif(k >= 235 && k < 355)
         angle = -45;
-    elseif(k >= 320 && k < 522)
+    elseif(k >= 355 && k < 557)
         angle = -30;
-    elseif(k >= 522 && k < 628)
+    elseif(k >= 557 && k < 649)
         angle = -15;
-    elseif(k >= 628 && k < 724)
+    elseif(k >= 649 && k < 738)
         angle = 0;
-    elseif(k >= 724 && k < 822)
+    elseif(k >= 738 && k < 861)
         angle = 15;
-    elseif(k >= 822 && k < 949)
+    elseif(k >= 861 && k < 971)
         angle = 30;
-    elseif(k >= 949 && k < 1059)
+    elseif(k >= 971 && k < 1084)
         angle = 45;
-    elseif(k >= 1059 && k < 1179)
+    elseif(k >= 1084 && k < 1212)
         angle = 60;
     else
         angle = 75;
     end
     
-    imagename = sprintf('/home/matheus/catkin_ws/brouillons/imgRope/imgMap/imgMap_%d.jpeg',k);
+    imagename = sprintf('/home/matheus/catkin_ws/brouillons/imgRope/imgMap/imgBW_%d.jpeg',k);
     I = imread(imagename);
     I = im2bw(I, 0.9);
     
@@ -100,8 +100,10 @@ for k=ko:nImages;
     if(mean(xi) > 0)
         xi = -xi;
         inv = true;
+        Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
+        Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     else
-        Tx      = -0.03;          % distance in x-axis between camera and rope attachment on robot
+        Tx      = -0.02;          % distance in x-axis between camera and rope attachment on robot
         Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     end
     
