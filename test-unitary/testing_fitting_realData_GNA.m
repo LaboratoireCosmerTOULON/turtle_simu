@@ -58,23 +58,23 @@ for k=ko:nImages;
     angle = 0;
     if(k < 120)
         angle = -75;
-    elseif(k >= 121 && k < 207)
+    elseif(k >= 120 && k < 207)
         angle = -60;
-    elseif(k >= 208 && k < 320)
+    elseif(k >= 207 && k < 320)
         angle = -45;
-    elseif(k >= 321 && k < 522)
+    elseif(k >= 320 && k < 522)
         angle = -30;
-    elseif(k >= 523 && k < 628)
+    elseif(k >= 522 && k < 628)
         angle = -15;
-    elseif(k >= 629 && k < 724)
+    elseif(k >= 628 && k < 724)
         angle = 0;
-    elseif(k >= 725 && k < 822)
+    elseif(k >= 724 && k < 822)
         angle = 15;
-    elseif(k >= 823 && k < 949)
+    elseif(k >= 822 && k < 949)
         angle = 30;
-    elseif(k >= 950 && k < 1059)
+    elseif(k >= 949 && k < 1059)
         angle = 45;
-    elseif(k >= 1060 && k < 1179)
+    elseif(k >= 1059 && k < 1179)
         angle = 60;
     else
         angle = 75;
@@ -100,6 +100,9 @@ for k=ko:nImages;
     if(mean(xi) > 0)
         xi = -xi;
         inv = true;
+    else
+        Tx      = -0.03;          % distance in x-axis between camera and rope attachment on robot
+        Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
     end
     
     % Fitting with Gauss-Newton method
@@ -140,7 +143,7 @@ for k=ko:nImages;
         ylabel('y_{img}(m)')
         set(gca,'Ydir','reverse')
         axis([-0.64 0.64 -0.48 0.48])
-        fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi);
+        fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\tsteps %d, chisq %f\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi,steps,chisq);
         
         % Wait to continue
         w = waitforbuttonpress;
