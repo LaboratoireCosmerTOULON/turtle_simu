@@ -11,18 +11,16 @@ function [s_min,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,s_init,lb,ub,pc)
 % hmax : the rope maximum sag 
 
 format long
-tol     = 1e-8; 				% set a value for the accuracy
-tol_chisq= 1e-2; 				% set a value for the accuracy
+tolChisq= 1e-2; 				% set a value for the accuracy
 maxstep = 20; 					% set maximum number of steps to run for
 m       = length(xi); 			% determine number of measurements
 n       = length(s_init); 		% determine number of parameters
 s       = s_init;				% initial guess
 s_old   = s;
 chisq   = 0;                    % merit function
-chisq_old= chisq;
+chisqOld= chisq;
 J       = zeros(m,n); 			% create Jacobian matrix
 r       = zeros(m,1); 			% vector of residuals
-delta_s = zeros(maxstep,1); 	% vector containing the value s-s_old
 
 for k = 1:maxstep % iterate through process
     
@@ -34,6 +32,8 @@ for k = 1:maxstep % iterate through process
     % Calculate the model y = f(xi,p)
     Pcat2d = catenaryProjection(rlen,hmax,s,xi,pc);
     y = Pcat2d(2,:);
+    J = zeros(m,n);
+    r = zeros(m,1); 
     outliers = [];
     for i = 1:m % for all measurements
         % Calculate the sum of squares of residuals
@@ -79,14 +79,13 @@ for k = 1:maxstep % iterate through process
     s_min = s;
     % Calculate estimation improvement and break loop is improvement is
     % less than tolerance
-    delta_s(k) = (1/sqrt(2))*sqrt((s(1) - s_old(1))^2 + (s(2) - s_old(2))^2);
-    delta_chisq = abs(chisq - chisq_old);
-    if (delta_chisq <= tol_chisq);
+    deltaChisq = abs(chisq - chisqOld);
+    if (deltaChisq <= tolChisq);
         break
     end
     % Otherwise continue loop
     s_old = s; %set s to s_old
-    chisq_old = chisq;
+    chisqOld = chisq;
 end
 steps = k;
 end
