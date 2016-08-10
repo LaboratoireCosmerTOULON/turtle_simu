@@ -52,6 +52,8 @@ py = 525.0;
 % Vector with estimated parameters
 Svec_gna = zeros(2,nImages);
 Svec_real = zeros(2,nImages);
+minPoints = 3500; % minimum of points to an image be considered as valid
+rho_min   = 0.85;
 
 for k=ko:nImages;
     
@@ -95,62 +97,66 @@ for k=ko:nImages;
     xp = xi;
     yp = yi;
     
-    % If theta is negative, invert xi
-    inv = false;
-    if(mean(xi) > 0)
-        xi = -xi;
-        inv = true;
-        Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
-        Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
-    else
-        Tx      = -0.02;          % distance in x-axis between camera and rope attachment on robot
-        Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
-    end
-    
-    % Fitting with Gauss-Newton method
-    s_init = [0.5; 0.5]; % set initial guess
-    lb = [0.01; 0.01]; % lower bound
-    ub = [1; 1]; % upper bound
-    [s_gna,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
-    
-    % Calculate catenary from estimated parameters
-    np3d = 1000;
-    Pcat3d_gna  = catenary3D(rlen,hmax,s_gna,Tcam,np3d); % estimation from fmincon
-    Pcat2d_gna = catenaryProjection(rlen,hmax,s_gna, Pcat3d_gna(1,:), Pcat3d_gna(2,:), Pcat3d_gna(3,:),Tcam); % estimation from gna
-    
-    if(inv == true)
-        s_gna(2)        = -s_gna(2);
-        Pcat2d_gna(1,:) = -Pcat2d_gna(1,:);
-    end
-    
-    Svec_real(:,k) = [0.20; angle];
-    Svec_gna(:,k) = [hmax*s_gna(1); asin(s_gna(2))*180/pi];
-    %     fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi);    
-    
- 
-    % Plot results
-    if(dp)
-        clf; % clear figures before plotting
-        % Show image
-        figure(1);
-        imshow(I);
-        % Plot estimation
-        figure(2);
-        plot(xp,yp,'.');
-        hold on
-        plot(Pcat2d_gna(1,:),Pcat2d_gna(2,:),'r');
-        l=legend('Acquired','GNA');l.Location='best';
-        title('Estimating sag from real data')
-        xlabel('x_{img}(m)')
-        ylabel('y_{img}(m)')
-        set(gca,'Ydir','reverse')
-        axis([-0.64 0.64 -0.48 0.48])
-        fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\tsteps %d, chisq %f\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi,steps,chisq);
+    rho = corrcoef(xi',yi');
+    if(numel(xi) > minPoints && rho(2) > rho_min)
+        % If theta is negative, invert xi
+        inv = false;
+        if(mean(xi) > 0)
+            xi = -xi;
+            inv = true;
+            Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
+            Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
+        else
+            Tx      = -0.02;          % distance in x-axis between camera and rope attachment on robot
+            Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
+        end
         
-        % Wait to continue
-        w = waitforbuttonpress;
-        %     pause(0.1);
+        % Fitting with Gauss-Newton method
+        s_init = [0.5; 0.5]; % set initial guess
+        lb = [0.01; 0.01]; % lower bound
+        ub = [1; 1]; % upper bound
+        [s_gna,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
+        
+        % Calculate catenary from estimated parameters
+        np3d = 1000;
+        Pcat3d_gna  = catenary3D(rlen,hmax,s_gna,Tcam,np3d); % estimation from fmincon
+        Pcat2d_gna = catenaryProjection(rlen,hmax,s_gna, Pcat3d_gna(1,:), Pcat3d_gna(2,:), Pcat3d_gna(3,:),Tcam); % estimation from gna
+        
+        if(inv == true)
+            s_gna(2)        = -s_gna(2);
+            Pcat2d_gna(1,:) = -Pcat2d_gna(1,:);
+        end
+        
+        Svec_real(:,k) = [0.20; angle];
+        Svec_gna(:,k) = [hmax*s_gna(1); asin(s_gna(2))*180/pi];
+        %     fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi);
+        
+        
+        % Plot results
+        if(dp)
+            clf; % clear figures before plotting
+            % Show image
+            figure(1);
+            imshow(I);
+            % Plot estimation
+            figure(2);
+            plot(xp,yp,'.');
+            hold on
+            plot(Pcat2d_gna(1,:),Pcat2d_gna(2,:),'r');
+            l=legend('Acquired','GNA');l.Location='best';
+            title('Estimating sag from real data')
+            xlabel('x_{img}(m)')
+            ylabel('y_{img}(m)')
+            set(gca,'Ydir','reverse')
+            axis([-0.64 0.64 -0.48 0.48])
+            fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\tsteps %d, chisq %f\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi,steps,chisq);
+            
+            % Wait to continue
+            w = waitforbuttonpress;
+            %     pause(0.1);
+        end
     end
+    
 end
 
 % Plot estimated angle
