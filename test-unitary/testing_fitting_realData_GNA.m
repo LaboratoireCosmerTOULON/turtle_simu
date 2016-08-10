@@ -40,8 +40,8 @@ rlen = 0.70; % cable half-length in meters
 hmax = 0.40; % cable maximum sag
 % Turtlebot features (measurements in SigmaC)
 Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
-Ty      = -0.10;        % distance in y-axis between camera and rope attachment on robot
-Tz      =  0.20;         % distance in z-axis between camera and rope attachment on robot
+Ty      = -0.11;        % distance in y-axis between camera and rope attachment on robot
+Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
 Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
 % Camera parameters
 uo = 319.5;
@@ -97,8 +97,11 @@ for k=ko:nImages;
     xp = xi;
     yp = yi;
     
+    % Calculate Pearson correlation coefficient
     rho = corrcoef(xi',yi');
-    if(numel(xi) > minPoints && rho(2) > rho_min)
+    
+    % Only process image if enough points and Pearson coeff.
+    if(numel(xi) > minPoints && abs(rho(2)) > rho_min)
         % If theta is negative, invert xi
         inv = false;
         if(mean(xi) > 0)
@@ -107,7 +110,7 @@ for k=ko:nImages;
             Tx      = -0.01;          % distance in x-axis between camera and rope attachment on robot
             Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
         else
-            Tx      = -0.02;          % distance in x-axis between camera and rope attachment on robot
+            Tx      = -0.03;          % distance in x-axis between camera and rope attachment on robot
             Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
         end
         
@@ -127,10 +130,24 @@ for k=ko:nImages;
             Pcat2d_gna(1,:) = -Pcat2d_gna(1,:);
         end
         
-        Svec_real(:,k) = [0.20; angle];
-        Svec_gna(:,k) = [hmax*s_gna(1); asin(s_gna(2))*180/pi];
-        %     fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi);
-        
+        % Save results in vector
+        da = 0;
+        db = 0;
+        if(k-ko > 1)
+            da = abs(s_gna(1) - Svec_gna(1,k-1));
+            db = abs(s_gna(2) - Svec_gna(2,k-1));
+            if( da < 0.2 && db < 0.25 )
+                Svec_real(:,k) = [0.20; angle];
+                Svec_gna(:,k) = s_gna(:);
+            else
+                Svec_real(:,k) = [0.20; angle];
+                Svec_gna(:,k) =  Svec_gna(:,k-1);
+            end
+        else
+            Svec_real(:,k) = [0.20; angle];
+            Svec_gna(:,k) = s_gna(:);
+        end
+
         
         % Plot results
         if(dp)
@@ -155,6 +172,12 @@ for k=ko:nImages;
             w = waitforbuttonpress;
             %     pause(0.1);
         end
+    elseif(k-ko >= 1)
+        Svec_real(:,k) = [0.20; angle];
+        Svec_gna(:,k) = Svec_gna(:,k-1);
+    else
+        Svec_real(:,k) = [0.20; angle];
+        Svec_gna(:,k) = [0/0; 0/0];
     end
     
 end
@@ -163,7 +186,7 @@ end
 figure();
 plot(1:nImages,Svec_real(1,:))
 hold on
-plot(1:nImages,Svec_gna(1,:),'r')
+plot(1:nImages,hmax*Svec_gna(1,:),'r')
 l=legend('real','GNA');l.Location='best';
 title('Estimating sag from real data')
 xlabel('k')
@@ -173,7 +196,7 @@ ylabel('Rope sag (m)')
 figure();
 plot(1:nImages,Svec_real(2,:))
 hold on
-plot(1:nImages,Svec_gna(2,:),'r')
+plot(1:nImages,asin(Svec_gna(2,:))*180/pi,'r')
 l=legend('real','GNA');l.Location='best';
 title('Estimating angle from real data')
 xlabel('k')
