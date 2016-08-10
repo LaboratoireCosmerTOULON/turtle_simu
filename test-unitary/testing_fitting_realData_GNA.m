@@ -136,7 +136,7 @@ for k=ko:nImages;
         if(k-ko > 1)
             da = abs(s_gna(1) - Svec_gna(1,k-1));
             db = abs(s_gna(2) - Svec_gna(2,k-1));
-            if( da < 0.2 && db < 0.25 )
+            if( da < 0.25 && db < 0.35 )
                 Svec_real(:,k) = [0.20; angle];
                 Svec_gna(:,k) = s_gna(:);
             else
