@@ -9,4 +9,4 @@ sizeA = [1250 2];
 A = dlmread('/home/matheus/catkin_ws/brouillons/Sgna.dat');
 
 figure()
-plot(1:length(A),A(:,2));
+plot(1:1051,asin(A(1:1051,2))*180/pi);

@@ -99,11 +99,6 @@ for k=ko:nImages;
     
     % Calculate Pearson correlation coefficient
     rho = corrcoef(xi',yi');
-    sNu = sum((xi-mean(xi)).*(yi-mean(yi)));
-    dex = sqrt(sum((xi-mean(xi)).^2));
-    dey = sqrt(sum((yi-mean(yi)).^2));
-    rf2 = sNu/(dex*dey);
-    fprintf('rhov %f rhof %f', rho(2), rf2);
     % Only process image if enough points and Pearson coeff.
     if(numel(xi) > minPoints && abs(rho(2)) > rho_min)
         % If theta is negative, invert xi
