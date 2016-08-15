@@ -14,7 +14,8 @@ Ty      = -0.11;        % distance in y-axis between camera and rope attachment 
 Tz      =  0.24;         % distance in z-axis between camera and rope attachment on robot
 Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera frame
 
-s = [0.5; 0.5];
+s = [0.748344; -0.850352];
+
 Pcat3d_gna = catenary3D(rlen,hmax,s,Tcam,100);
 p_A = Pcat3d_gna(:,end); % coordinates of rope attachment point at robot r1 in rope-frame (p_C)
 L = interactionMatrix(rlen,hmax,s, p_A(1), p_A(2), p_A(3));

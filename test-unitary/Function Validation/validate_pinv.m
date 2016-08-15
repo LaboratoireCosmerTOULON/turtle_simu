@@ -16,20 +16,15 @@ Tcam    = [Tx Ty Tz];   % Translation between rope attachment point and camera f
 
 % 1: s_gna= (0.759295,-0.861092)
 
-s = [0.759295;-0.861092];
-s_d= [0.5; 0.5];
+
+a = 0.748344;
+b = -0.850352;
+s = [a; b];
 Pcat3d_gna = catenary3D(rlen,hmax,s,Tcam,100);
 p_A = Pcat3d_gna(:,end); % coordinates of rope attachment point at robot r1 in rope-frame (p_C)
-
 L = interactionMatrix(rlen,hmax,s, p_A(1), p_A(2), p_A(3));
-gain = 1;
-s_e = s - s_d;
-v_pC = -gain*pinv(L)*s_e;
 
 LP2 = L'*inv(L*L');
 LP2
 Lpinv = pinv(L);
 Lpinv
-
-v1 =  -gain*pinv(L)*s_e
-v2 =  -gain*LP2*s_e
