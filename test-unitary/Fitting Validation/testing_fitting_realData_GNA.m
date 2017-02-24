@@ -52,6 +52,7 @@ py = 525.0;
 % Vector with estimated parameters
 Svec_gna = zeros(2,nImages);
 Svec_real = zeros(2,nImages);
+Optm_data = zeros(2,nImages);
 minPoints = 3500; % minimum of points to an image be considered as valid
 rho_min   = 0.85;
 
@@ -82,7 +83,7 @@ for k=ko:nImages;
         angle = 75;
     end
     
-    imagename = sprintf('/home/matheus/catkin_ws/brouillons/imgRope/imgMap/imgBW_%d.jpeg',k);
+    imagename = sprintf('/home/matheus/Documents/PhD/Research/Tethered_Turtlebots/Experiments/Fixed_leader/160818_imgRope/imgMap/imgBW_%d.jpeg',k);
     I = imread(imagename);
     I = im2bw(I, 0.9);
     
@@ -119,10 +120,13 @@ for k=ko:nImages;
         ub = [1; 1]; % upper bound
         [s_gna,steps,chisq] = GaussNewton_v2(xi,yi,rlen,hmax,s_init,lb,ub,Tcam); % minimization with dampled GNA
         
+        Optm_data(1,k) = chisq;
+        Optm_data(2,k) = steps;
+
         % Calculate catenary from estimated parameters
         np3d = 1000;
-        Pcat3d_gna  = catenary3D(rlen,hmax,s_gna,Tcam,np3d); % estimation from fmincon
-        Pcat2d_gna = catenaryProjection(rlen,hmax,s_gna, Pcat3d_gna(1,:), Pcat3d_gna(2,:), Pcat3d_gna(3,:),Tcam); % estimation from gna
+        Pcat3d_gna  = catenary3D(rlen,hmax,s_gna,Tcam,np3d); 
+        Pcat2d_gna = catenaryProjection(rlen,hmax,s_gna, Pcat3d_gna(1,:), Pcat3d_gna(2,:), Pcat3d_gna(3,:),Tcam); 
         
         if(inv == true)
             s_gna(2)        = -s_gna(2);
@@ -147,6 +151,10 @@ for k=ko:nImages;
             Svec_gna(:,k) = s_gna(:);
         end
 
+        % Draw desired rope position
+        s_d = [0.5;-0.5];
+        Pcat3d_d  = catenary3D(rlen,hmax,s_d,Tcam,np3d); 
+        Pcat2d_d = catenaryProjection(rlen,hmax,s_d, Pcat3d_d(1,:), Pcat3d_d(2,:), Pcat3d_d(3,:),Tcam);
         
         % Plot results
         if(dp)
@@ -159,10 +167,11 @@ for k=ko:nImages;
             plot(xp,yp,'.');
             hold on
             plot(Pcat2d_gna(1,:),Pcat2d_gna(2,:),'r');
-            l=legend('Acquired','GNA');l.Location='best';
-            title('Estimating sag from real data')
-            xlabel('x_{img}(m)')
-            ylabel('y_{img}(m)')
+            plot(Pcat2d_d(1,:),Pcat2d_d(2,:),'g');
+            l=legend('Detected tether','Fitted','Desired');l.Location='best';
+            title('Estimating catenary shape from image')
+            xlabel('x(m)')
+            ylabel('y(m)')
             set(gca,'Ydir','reverse')
             axis([-0.64 0.64 -0.48 0.48])
             fprintf('I_%d (theta=%d)\nGNA=(%f,%f)\tsteps %d, chisq %f\n', k, angle, hmax*s_gna(1), asin(s_gna(2))*180/pi,steps,chisq);
